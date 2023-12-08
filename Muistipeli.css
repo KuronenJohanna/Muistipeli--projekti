@@ -1,0 +1,103 @@
+/* Muistipeli 2022*/
+/*Johanna Kuronen 2022*/
+  
+
+
+* {
+    
+    box-sizing: border-box;
+    
+    
+}  
+
+html, body {
+    background-image: url("taustakuva.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    
+    
+}
+
+p {
+    font-family: Helvetica;
+    font-size: 20px;
+    margin: 15px;   
+}
+
+h1 {
+    font-family: Lucida Handwriting;
+    font-size: 50px;
+    margin: 15px; 
+    
+    
+}
+
+
+.card{
+    background-image: url("frontshakki.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    background-color: #CA2374;   
+    margin: 5px;
+    box-shadow: 1px 1px 1px rgba(0,0,0,.3);
+    height: 200px; 
+}
+
+.card img {
+    height: 200px;
+    
+}
+.card:hover {
+    cursor: pointer;
+    border: 3px solid black;  
+}
+
+
+
+    
+
+.winning {
+    font-family: Lucida Handwriting;
+    font-size: 70px;
+    position:absolute;
+    top: 500px;
+    left: 350px;
+    display: none;
+    
+}
+
+main {
+    margin: 0 auto;
+    position: relative;
+    float: none;
+    top: 20px;
+    left: 250px;
+    display: inline-grid;
+    grid-template-columns: 25% 25% 25% 25%;
+    width: 640px;
+    height: 640px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    padding: 0;
+       
+}
+
+.memory-game {
+    height: 200px;
+    display: none;
+    
+
+}
+
+.start {
+    
+    border-width: 5px;
+    border-color: black;
+    
+}
+
+
+
+

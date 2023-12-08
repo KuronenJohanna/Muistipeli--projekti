@@ -1,0 +1,341 @@
+<!doctype html>
+<!--Muistipeli.html
+Johanna Kuronen 2022
+    -->
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <title>Muistipeli</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" media="screen" href="Muistipeli.css?v=2">
+    <link rel="icon" href="data:,">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <script src="jquery-3.7.0.js"></script>
+    <script>
+    
+    $(document).ready(function(){
+        
+
+        
+        var viimeisinAika = 0;
+        function haeajat() {
+
+        $.ajax({
+            url: "data.json",
+            dataType: "json",
+            success: function(vastaus) {
+        
+            var uusinAika = 0;
+            var viimeisinAvain = null;
+
+            Object.keys(vastaus).forEach(function(avain){ //funktio menee datan ajat läpi ja tallentaa viimeisimmän ajan ja avaimen
+                var aikaLeima = vastaus[avain];
+
+                if (aikaLeima > uusinAika) {
+
+                    uusinAika = aikaLeima
+                    viimeisinAvain = avain;
+      
+                }
+
+            });
+            if (uusinAika > viimeisinAika) {
+
+                if (viimeisinAvain === "avaa") {
+                    SuoritaKomento(viimeisinAvain)
+                } else {
+
+                setTimeout(function() {
+                  SuoritaKomento(viimeisinAvain);  
+                }, 100);
+            }
+                
+                viimeisinAika = uusinAika;
+            }
+            
+        },
+        error: function(error) {
+            console.error('Virhe JSON-tiedoston lukemisessa:', error);
+        }
+        });
+        }
+
+        function SuoritaKomento(komento){
+            if (komento === "vasen"){  //viimeisimmän ajan löytyessä suoritetaan suorita funktio
+            vasen();
+        }
+        else if (komento === "oikea") {
+            oikea()
+        }
+        else if (komento === "avaa") {
+            avaa()
+        }
+        else if (komento === "up") {
+            up()
+        }
+        else if (komento === "alas") {
+            alas()
+        }
+        else if (komento === "uusi") {
+            newGame()
+        }
+
+
+        }
+	//alert("Hello jQuery World!");		// alert pysäyttää
+	console.log("Hello from jQuery!");	// laittaa viestin selaimen konsoliin (kehittäjätyökalut)
+    
+        const taulukko = [
+            ["a", "b", "c", "d"],
+            ["e", "f", "g", "h"],
+            ["i", "j", "k", "l"]
+        ];
+        
+         let $row = 0;
+         let $sarake = 0;
+         
+         var $startElementti = $('#' + taulukko[$row][$sarake]);
+         $startElementti.addClass('start');
+         
+         function taulukonyhdistäminen() {
+        
+        for (let $rivi = 0; $rivi < taulukko.length; $rivi++) {
+            for (let $solu = 0; $solu < taulukko[$rivi].length; $solu++) {
+                const id = taulukko[$rivi][$solu];
+            
+                $("#" + id).data("cardValue", id);
+            }
+            }
+            }
+      
+
+        var app = {
+            ImgFound: 0,
+            cards: ["bmw.jpg","bmw.jpg","Daisy.jpg","Daisy.jpg","koira.jpg","koira.jpg","Macarons.jpg","Macarons.jpg","owl.jpg","owl.jpg","shakki.jpg","shakki.jpg"],
+            init: function(){
+              app.shuffle(); 
+              
+            },
+      
+            shuffle: function(){ //korttien sekoitus
+                var random = 0;
+                var temp = 0;
+                for (i = 1; i < app.cards.length; i++){
+                    random = Math.round(Math.random()* i);
+                    temp = app.cards[i];
+                    app.cards[i] = app.cards[random];
+                    app.cards[random] = temp;
+         
+                }
+                app.assignCards();
+                
+                console.log('Shuffled Card Array: ' + app.cards);
+            },
+            assignCards: function(){ //lisätään korttijono mätsäämää html koodattuja kortteja
+                $('.card').each(function(index){
+                    $(this).data('kortinArvo', app.cards[index]);
+                    
+                    
+                          
+                });
+                
+                
+            },
+  
+            checkMatch: function(){ //tarkistaa mätsin
+                if($('.selected').length == 2) {  // jos valittu kaksi korttia
+                   if($('.selected').first().data('kortinArvo') == $('.selected').last().data('kortinArvo')){                   
+                   //valitut kortit ovat samanlaisia eli pari ->> poista kortit
+                      $('.selected').each(function(){
+                            $(this).animate({opacity: 0}).detach('unmatched');
+                                app.ImgFound++;
+                                
+                   });  
+                   
+                   $('.selected').each(function(){
+                    $(this).removeClass('selected');
+                    });
+                    app.checkWin();
+                } else {  // jos mätsiä ei löytynyt, "valinta" poistetaan
+                    setTimeout(function(){
+                        $('.selected').each(function(){
+                            $(this).html('').removeClass('selected');
+                        });
+                    
+                    }, 500)
+                
+                    } 
+               } 
+            },
+            checkWin: function(){
+                
+                if( app.ImgFound === 12) {
+                    $('.winning').fadeIn();
+                    }
+                    
+                
+            },
+ 
+};
+
+        app.init();
+        taulukonyhdistäminen()
+       
+
+
+                    
+//klikatessa näyttää kortin luvun (luku tässä esimerkissä, myöhemmin kuva)
+function avaa(){
+        var $nykyinenKortti = $('#' + taulukko[$row][$sarake]);
+        var kortinArvo = $nykyinenKortti.data('kortinArvo');
+        $nykyinenKortti.html('<img src="' + kortinArvo + '">').addClass('selected');
+        app.checkMatch();
+ 
+                };
+        
+         
+ function oikea(){
+       if ($sarake < 3) {// Tarkistaa että sarake on 0-3
+        var $nykyinenKortti = $('#' + taulukko[$row][$sarake]);
+        $nykyinenKortti.removeClass('start');
+        
+        
+        $sarake++;
+        
+        // nykyiseen korttiin lisätään start eli valinta
+        $nykyinenKortti = $('#' + taulukko[$row][$sarake]);
+        $nykyinenKortti.addClass('start');
+}
+ };
+
+ function vasen(){
+     if ($sarake > 0) {
+        var $nykyinenKortti = $('#' + taulukko[$row][$sarake]);
+        $nykyinenKortti.removeClass('start');
+        
+        
+        $sarake--;
+        
+        // nykyiseen korttiin lisätään start eli valinta
+        $nykyinenKortti = $('#' + taulukko[$row][$sarake]);
+        $nykyinenKortti.addClass('start');
+    }
+        
+
+ };
+  function alas(){
+        if ($row < 2){
+            var $nykyinenKortti = $('#' + taulukko[$row][$sarake]);
+            $nykyinenKortti.removeClass('start');
+            
+            $row ++;
+            
+            $nykyinenKortti = $('#' + taulukko[$row][$sarake]);
+            $nykyinenKortti.addClass('start');
+        }
+  
+  
+  };
+  function up(){
+        if ($row > 0){
+            var $nykyinenKortti = $('#' + taulukko[$row][$sarake]);
+            $nykyinenKortti.removeClass('start');
+            
+            $row --;
+            
+            $nykyinenKortti = $('#' + taulukko[$row][$sarake]);
+            $nykyinenKortti.addClass('start');
+        }
+  
+  
+  };
+ 
+
+
+function newGame(){
+        app.init()
+          $('.card').animate({opacity: 1}).addClass('card');
+          $('.card').empty('<img src="' +$(this).data('cardValue')+ '">').removeClass('selected');
+          $('.winning').hide();
+          app.ImgFound = 0;
+          
+          console.log("tämä ensin palauttaa kortit")
+            
+            };
+           
+setInterval(haeajat, 200);    //Hakee ja lukee data.json tiedostoa alati   
+    
+  
+ });   
+     
+   
+ </script>
+
+</head>
+<body>
+    
+    <h1> Muistipeli </h1>
+    <p>Löydä parit käyttäen micro:bittiä ohjaimena. Avaa kortti painamalla A tai B painiketta.
+        Halutessasi uuden pelin, paina A ja B painiketta samanaikaisesti.
+    </p>
+    
+   
+    
+    
+    
+    
+    <div class ="winning">Voitit!</div>
+  
+    <main class="main">
+        <div class="card unmatched" id="a"></div>
+        <div class="card unmatched" id="b"></div>
+        <div class="card unmatched" id="c"></div>
+        <div class="card unmatched" id="d"></div>
+        <div class="card unmatched" id="e"></div>
+        <div class="card unmatched" id="f"></div>
+        <div class="card unmatched" id="g"></div>
+        <div class="card unmatched" id="h"></div>
+        <div class="card unmatched" id="i"></div>
+        <div class="card unmatched" id="j"></div>
+        <div class="card unmatched" id="k"></div>
+        <div class="card unmatched" id="l"></div> 
+    </main>
+    
+    <div class="memory-game">
+            
+            <img class="front" src="bmw.jpg" alt="bmw">
+
+            <img class="front" src="Daisy.jpg" alt="daisy">
+       
+            <img class="front" src="Daisy.jpg" alt="daisy">
+
+            <img class="front" src="koira.jpg" alt="koira">
+
+            <img class="front" src="koira.jpg" alt="koira">
+    
+            <img class="front" src="Macarons.jpg" alt="maca">
+   
+            <img class="front" src="Macarons.jpg" alt="maca">
+      
+            <img class="front" src="owl.jpg" alt="owl">
+            
+            <img class="front" src="owl.jpg" alt="owl">
+      
+            <img class="front" src="shakki.jpg" alt="shakki">
+       
+            <img class="front" src="shakki.jpg" alt="shakki">
+    </div>
+ 
+    <footer>
+        <p> 2023 Johanna Kuronen</p>
+    </footer>   
+    
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+
+
+</body>
+
+
+</html>       
+       
